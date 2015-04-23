@@ -174,7 +174,7 @@ With a Many to Many association the database will have a join table that contain
 has_and_belongs_to_many
 has_many :through
 {% endhighlight %}
-has_many :through has a join model and a join table added to this method but allows hanging additional attributes on to the join table itself. has_and_belongs_to_many does not require a join model but requires creating a join table in a manual fashion. You cannot add additional attributes to the join table in this method.
+```has_many :through``` has a join model and a join table added to this method but allows hanging additional attributes on to the join table itself. ```has_and_belongs_to_many``` does not require a join model but requires creating a join table in a manual fashion. You cannot add additional attributes to the join table in this method.
 
 16 - Suppose we have a ```User``` model and a ```Group``` model, and we have a M:M association all set up. How do we associate the two?
 
