@@ -1,0 +1,91 @@
+---
+layout: post
+title:  "Tealeaf Quiz 3"
+date:   2015-04-28 23:54:14
+categories: tealeaf quiz
+---
+
+Quiz: Lesson 3
+
+1 - What's the difference between rendering and redirecting? What's the impact with regards to instance variables, view templates?
+
+Rendering creates a full response to send back to the browser. When rendering you are telling Rails which view to use in constructing a response.
+Redirecting sends an HTTP redirect status code to the browser. When redirecting you are telling the browser to send a new request for a different URL.
+If you redirect, you will lose instance variables in the redirected views.
+
+2 - If I need to display a message on the view template, and I'm redirecting, what's the easiest way to accomplish this?
+
+You can use a flash. ex. 
+{% highlight ruby %} 
+flash[:notice] = "I'm a new message!" 
+{% endhighlight %}
+
+3 - If I need to display a message on the view template, and I'm rendering, what's the easiest way to accomplish this?
+
+The flash.now will display in the current rendered view. ex.`
+
+{% highlight ruby %}
+class ClientsController < ApplicationController
+  def create
+    @client = Client.new(params[:client])
+    if @client.save
+      # ...
+    else
+      flash.now[:error] = "Could not save client"
+      render action: "new"
+    end
+  end
+end
+{% endhighlight %}
+
+4 - Explain how we should save passwords to the database.
+
+Using a one way hash and a salt on the password string is the best practice. In our
+PostIt app we use ```has_secure_password``` method from ```ActiveModel``` to create hashed tokens.
+A ```password_digest``` field is used to track the tokens. The gem ```bcrypt-ruby``` must be installed to use this method.
+
+5 - What should we do if we have a method that is used in both controllers and views?
+
+You would put your method in the ```application_controller.rb```. The method has to be listed
+as a ```helper_method``` also. ex.  ```helper_method :current_user, :logged_in?```
+
+6 - What is memoization? How is it a performance optimization?
+
+Memoization caches results from a method call. This can relieve database hits. We can then
+refer to the result stored in an instance variable rather than calling the method over and over again.
+
+7 - If we want to prevent unauthenticated users from creating a new comment on a post, what should we do?
+
+We use the methods ```current_user``` and ```logged_in?``` in the ```application_controller.rb``` to check
+if the user is authenticated and logged in. We also use a ```before_action``` in the controller
+to display an error message if user is not logged in or authenticated.
+
+8 - Suppose we have the following table for tracking "likes" in our application. How can we make this table polymorphic? Note that the "user_id" foreign key is tracking who created the like.
+
+<p><img src="/images/polymorphic_table.png" /></p>
+<p>The table would be like this:</p>
+<p><img src="/images/polymorphic_likes_table.png" /></p>
+
+
+9 - How do we set up polymorphic associations at the model layer? Give example for the polymorphic model (eg, Vote) as well as an example parent model (the model on the 1 side, eg, Post).
+
+{% highlight ruby %}
+class Vote < ActiveRecord::Base
+  belongs_to :voteable, polymorphic: true
+  
+end
+{% endhighlight %}
+
+{% highlight ruby %}
+class Post < ActiveRecord::Base
+  has_many :votes, as: :voteable
+  
+end
+{% endhighlight %}
+
+10 - What is an ERD diagram, and why do we need it?
+
+ERD stands for Entity Relationship Diagram. This diagram should be
+created before coding. This is a diagram of our models, associations
+and other meta data. Building this diagram up front can save headaches
+down the road and designated as the reference document for the whole application.
