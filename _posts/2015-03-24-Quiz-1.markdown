@@ -1,0 +1,196 @@
+---
+layout: post
+title:  "Tealeaf Quiz 1"
+date:   2015-03-24 23:54:14
+categories: tealeaf quiz
+---
+
+
+
+<h4>Quiz: Lesson 1</h4>
+
+
+1 - Why do they call it a relational database?
+
+   A relational database in composed of tables. These tables link together to combine rich datasets. These database tables are created with rows and columns like in a spreadsheet. The rows are where your data is stored and the columns are the schema definition for the table itself. The reason the databases are relational is because tables have a unique primary key column that links to a foreign key column on another table. Thus the tables are relating to one another when writing queries with primary key to foreign key table relationship joins.
+
+2 - What is SQL?
+
+   SQL refers to the structured query language for relational databases. This language is standardized across many different database brands. This language allows creating - updating - deleting many different views of datasets in the database.
+   There are two predominant views into a relational database. What are they, and how are they different?
+   The two main views in a relational database are the schema and the data. Relational databases are composed of tables which are similar to a spreadsheet as a visualization. The schema is the columns in a table. Each of the columns specifies the data type for that column. The data is in the rows of the table. The data can be inserted, updated, viewed and deleted from one or many rows using the standardized SQL query language.
+	
+3 - In a table, what do we call the column that serves as the main identifier for a row of data? We're looking for the general database term, not the column name.
+   
+   Primary key.
+
+4 - What is a foreign key, and how is it used?
+ 
+   In a relational database the foreign key in a table is linked to the primary key of another table in a 1 to many or a many to many table relationship. As an example, the primary key value in say a users table stores a unique id value in a column for that users row. This is usually is an integer and is also a unique value for every row in the users table. In another table say the comments table, can have multiple rows that contain each comment the user creates. To find all the comments that a user creates, the comments table contains a foreign key field that contains the same value of the primary key column of the users table. This is a 1 to many relationship. i.e. each user can have multiple comments using this feature of a relational database.
+	
+5 - At a high level, describe the ActiveRecord pattern. This has nothing to do with Rails, but the actual pattern that ActiveRecord uses to perform its ORM duties.
+
+   The Active Record Pattern is a pattern that maps:
+
+   * Classes to tables
+   * Objects to rows of data within that table
+   * Getters/Setters to columns in that table 
+
+6 - If there's an ActiveRecord model called "CrazyMonkey", what should the table name be?  
+
+{% highlight ruby linenos %}
+# Use the tableize method on the string "CrazyMonkey"
+
+"CrazyMonkey".tableize
+ #=> "crazy_monkeys"
+ 
+{% endhighlight %}
+
+
+So the table name would be: ```"crazy_monkeys"```
+
+
+7 - If I'm building a 1:M association between ```Project``` and ```Issue```, what will the model associations and foreign key be?
+Model Associations:
+{% highlight ruby linenos %}
+class Project < ActiveRecord::Base
+  has_many :issues
+end
+{% endhighlight %}
+
+{% highlight ruby linenos %}
+class Issue < ActiveRecord::Base
+  belongs_to : project
+end
+{% endhighlight %}
+
+The foreign key for this association is ```"project_id"``` in the issues table.
+
+
+8 -  Given this code:
+
+{% highlight ruby linenos %}
+
+class Zoo < ActiveRecord::Base
+  has_many :animals
+end
+
+{% endhighlight %}
+
+What do you expect the other model to be and what does database schema look like?
+
+<img src="/images/animal_schema.png" alt="Screen Shot 2015-03-24 at 10.14.08 PM" width="549" height="400" />
+
+{% highlight ruby linenos %}
+class Animal < ActiveRecord::Base
+  belongs_to :zoo
+end
+{% endhighlight %}
+
+{% highlight ruby linenos %}
+#migration for the animals table
+
+class CreateAnimals < ActiveRecord::Migration
+ def change
+   create_table :animals do |t|
+     t.string :species
+     t.string :name
+   end
+ end
+end
+
+# ooops
+
+class AddZoo < ActiveRecord::Migration
+  def change
+    add_column :animals, :zoo_id, :integer
+  end
+end
+
+{% endhighlight %}
+
+
+9 - What are the methods that are now available to a zoo to call related to animals?
+
+{% highlight ruby %}
+zoo = Zoo.create(name: 'San Diego Zoo')
+animal = zoo.animals.create(species: 'Kangaroo')
+animal.name = 'jumpster'
+animal.save
+zoo.animals.name
+zoo.animals
+zoo
+animal = Animal.create(species: 'Alligator', name: 'Buster')
+zoo.animals << animal
+Animal.find_by name: 'jumpster'
+Animal.all
+{% endhighlight %}
+
+10 - How do I create an animal called "jumpster" in a zoo called "San Diego Zoo"?
+
+{% highlight ruby %}
+zoo = Zoo.create(name: 'San Diego Zoo')
+animal = zoo.animals.create(species: 'Kangaroo')
+animal.name = 'jumpster'
+animal.save
+{% endhighlight %}
+
+11 -  What is mass assignment? What's the non-mass assignment way of setting values?
+
+Mass assignment is a way to assign multiple values to attributes via a single assignment operator.
+
+{% highlight ruby %}
+# Mass assignment example
+
+animal = Animal.create(species: 'Turtle', name: 'Slow Mo')
+
+# Non mass assignment example
+
+animal = Animal.new
+animal.species = 'Turtle'
+animal.name = 'Slow Mo'
+animal.save
+{% endhighlight %}
+
+12 - What does this code do? ```Animal.first```
+
+It will return the first database row Animal object in the animals database table.
+
+13 - If I have a table called ```"animals"``` with columns called ```"name"```, and a model called ```Animal```, how do I instantiate an animal object with name set to "Joe". Which methods makes sure it saves to the database?
+
+{% highlight ruby %}
+animal = Animal.new(name: 'Joe)
+animal.save
+animal = Animal.create(name: 'Joe')
+{% endhighlight %}
+
+14 - How does a M:M association work at the database level?
+
+With a Many to Many association the database will have a join table that contains foreign keys of two tables being joined. The foreign keys match the tables being joined, primary keys and creates a M to M relationship
+
+15 - What are the two ways to support a M:M association at the ActiveRecord model level? Pros and cons of each approach?
+
+{% highlight ruby %}
+has_and_belongs_to_many
+has_many :through
+{% endhighlight %}
+```has_many :through``` has a join model and a join table added to this method but allows hanging additional attributes on to the join table itself. ```has_and_belongs_to_many``` does not require a join model but requires creating a join table in a manual fashion. You cannot add additional attributes to the join table in this method.
+
+16 - Suppose we have a ```User``` model and a ```Group``` model, and we have a M:M association all set up. How do we associate the two?
+
+{% highlight ruby linenos %}
+class User < ActiveRecord::Base
+  has_many :user_groups, foreign_key: :user_id
+  has_many :groups, through: :user_groups
+end
+
+class UserGroup < ActiveRecord::Base
+  belongs_to :user, foreign_key: :user_id 
+  belongs_to :group, foreign_key: :group_id
+end
+
+class Group < ActiveRecord::Base
+  has_many :user_groups, foreign_key: :group_id 
+  has_many :users, through: :user_groups
+end
+{% endhighlight %}
