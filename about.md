@@ -6,4 +6,3 @@ permalink: /about/
 
 
 {{ site.description }}
-

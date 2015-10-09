@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Tealeaf Quiz 3"
+title:  "Quiz 3"
 date:   2015-04-28 23:54:14
 categories: tealeaf quiz
 ---
@@ -15,9 +15,9 @@ If you redirect, you will lose instance variables in the redirected views.
 
 2 - If I need to display a message on the view template, and I'm redirecting, what's the easiest way to accomplish this?
 
-You can use a flash. ex. 
-{% highlight ruby %} 
-flash[:notice] = "I'm a new message!" 
+You can use a flash. ex.
+{% highlight ruby %}
+flash[:notice] = "I'm a new message!"
 {% endhighlight %}
 
 3 - If I need to display a message on the view template, and I'm rendering, what's the easiest way to accomplish this?
@@ -72,14 +72,14 @@ to display an error message if user is not logged in or authenticated.
 {% highlight ruby %}
 class Vote < ActiveRecord::Base
   belongs_to :voteable, polymorphic: true
-  
+
 end
 {% endhighlight %}
 
 {% highlight ruby %}
 class Post < ActiveRecord::Base
   has_many :votes, as: :voteable
-  
+
 end
 {% endhighlight %}
 
