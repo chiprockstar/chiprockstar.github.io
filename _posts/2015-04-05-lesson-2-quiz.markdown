@@ -5,7 +5,7 @@ date:   2015-04-05 02:13:14
 categories: quiz tealeaf
 ---
 
-Quiz: Lesson 2
+
 
 1 - Item Name all the 7 (or 8) routes exposed by the resources keyword in the routes.rb file.
 Also name the 4 named routes, and how the request is routed to the controller/action.

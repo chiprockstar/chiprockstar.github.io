@@ -7,7 +7,7 @@ categories: tealeaf quiz
 
 
 
-<h4>Quiz: Lesson 1</h4>
+
 
 
 1 - Why do they call it a relational database?

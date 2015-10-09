@@ -5,7 +5,6 @@ date:   2015-04-28 23:54:14
 categories: tealeaf quiz
 ---
 
-Quiz: Lesson 3
 
 1 - What's the difference between rendering and redirecting? What's the impact with regards to instance variables, view templates?
 
